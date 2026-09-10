@@ -1,31 +1,12 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ismherna <ismherna@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/07 19:22:54 by ismherna          #+#    #+#             */
-/*   Updated: 2025/01/14 14:48:00 by ismherna         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "includes/ScalarConverter.hpp"
 
-#include "includes/Scalars.hpp"
-
-std::string arrToStr(char *val)
+int main(int argc, char** argv)
 {
-	int i = -1;
-	std::stringstream ss;
-	while (val[++i])
-		ss << val[i];
-	return ss.str();
-}
- 
-int main(int argc, char **argv) {
-	
-	if (argc != 2) {
-		std::cout << RED "ERROR:The arguments to be converted were not sent" RESET << std::endl;
-		return 0;
+	if (argc != 2)
+	{
+		std::cout << "Usage: ./ex00 <literal>" << std::endl;
+		return 1;
 	}
-	Scalars::convert(arrToStr(argv[1]));
+	ScalarConverter::convert(argv[1]);
+	return 0;
 }

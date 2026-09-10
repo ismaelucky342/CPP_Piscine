@@ -1,21 +1,24 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ismherna <ismherna@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/07 19:22:54 by ismherna          #+#    #+#             */
-/*   Updated: 2024/12/10 22:19:38 by ismherna         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "includes/Serializer.hpp"
+#include <iostream>
 
-#include "includes/Serial.hpp"
+int main()
+{
+	Data data;
+	data.value = 42;
 
-int main() {
-	Data *dat = new Data();
-	
-	uintptr_t rs = Serial::serial(dat);
-	Serial::deserial(rs);
-	delete dat;
+	Data* original = &data;
+
+	uintptr_t raw = Serializer::serialize(original);
+	Data* restored = Serializer::deserialize(raw);
+
+	std::cout << "original:  " << original << std::endl;
+	std::cout << "restored:  " << restored << std::endl;
+	std::cout << "value:     " << restored->value << std::endl;
+
+	if (original == restored)
+		std::cout << "Pointers are equal" << std::endl;
+	else
+		std::cout << "Pointers are different" << std::endl;
+
+	return 0;
 }

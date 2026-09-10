@@ -1,39 +1,15 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: ismherna <ismherna@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/10/23 04:06:52 by ismherna          #+#    #+#              #
-#    Updated: 2024/12/07 21:26:11 by ismherna         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+NAME = ex00
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-TARGET = ex00
-SRCS =	main.cpp \
-		src/Scalars.cpp \
-		src/Chars.cpp \
-		src/Integrers.cpp \
-		src/Floats.cpp \
-		src/Doubles.cpp
+
+SRCS = main.cpp src/ScalarConverter.cpp
 OBJS = $(SRCS:.cpp=.o)
 
-all: $(TARGET)
-	@echo "																									"	
-	@echo "  ██████╗██████╗ ██████╗    ███╗   ███╗ ██████╗ ██████╗ ██╗   ██╗██╗     ███████╗         ██████╗  ██████╗ "
-	@echo " ██╔════╝██╔══██╗██╔══██╗   ████╗ ████║██╔═══██╗██╔══██╗██║   ██║██║     ██╔════╝        ██╔═████╗██╔════╝ "
-	@echo " ██║     ██████╔╝██████╔╝   ██╔████╔██║██║   ██║██║  ██║██║   ██║██║     █████╗          ██║██╔██║███████╗ "
-	@echo " ██║     ██╔═══╝ ██╔═══╝    ██║╚██╔╝██║██║   ██║██║  ██║██║   ██║██║     ██╔══╝          ████╔╝██║██╔═══██╗"
-	@echo " ╚██████╗██║     ██║███████╗██║ ╚═╝ ██║╚██████╔╝██████╔╝╚██████╔╝███████╗███████╗███████╗╚██████╔╝╚██████╔╝"
-	@echo "  ╚═════╝╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝ ╚═════╝  ╚═════╝ "
-	@echo "                                                                                                          		"
-	@echo "				12/02/2024 - ismherna@student.42.fr - 42 Madrid - Ismael Hernández	 "                                                                                                          
+all: $(NAME)
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+$(NAME): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -42,9 +18,8 @@ clean:
 	rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(TARGET)
+	rm -f $(NAME)
 
 re: fclean all
 
 .PHONY: all clean fclean re
-
