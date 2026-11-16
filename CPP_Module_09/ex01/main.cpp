@@ -25,6 +25,9 @@ int main(int ac, char **av)
 		std::cout << rpn << std::endl;
 	}
 	catch (std::exception& e)
-		std::cerr << RED "ERROR: "   << e.what() RESET << std::endl;
-	return 0;
+	{
+		std::cerr << RED "Error: " << e.what() << RESET << std::endl;
+		return (1);
+	}
+	return (0);
 }

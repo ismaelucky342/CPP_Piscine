@@ -24,10 +24,11 @@ DiamondTrap::DiamondTrap(std::string name) : ClapTrap(name), FragTrap(name), Sca
 	std::cout << WHITE "DiamondTrap: Default constructor called" RESET << std::endl;
 }
 
-DiamondTrap::DiamondTrap(const DiamondTrap &ref)
+DiamondTrap::DiamondTrap(const DiamondTrap &ref) :
+	ClapTrap(ref), FragTrap(ref), ScavTrap(ref)
 {
 	std::cout << GREEN "DiamondTrap: Copy constructor called" RESET << std::endl;
-	*this = ref;
+	this->_name = ref._name;
 }
 
 DiamondTrap::~DiamondTrap()

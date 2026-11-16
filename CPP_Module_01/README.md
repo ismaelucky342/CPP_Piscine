@@ -1,235 +1,139 @@
-<img width="921" height="223" alt="imagen" src="https://github.com/user-attachments/assets/67e0755f-5526-4f28-b8a7-e8055dba7155" />
+# CPP Module 01 - Memory Allocation, Pointers, References and File I/O
 
-# CPP Module 01 - Memory Allocation, Pointers, References & File I/O
+<img width="921" height="223" alt="CPP Module 01" src="https://github.com/user-attachments/assets/67e0755f-5526-4f28-b8a7-e8055dba7155" />
+
+- **Rank:** 04
+- **Language:** C++98
+- **Subject:** [subjects/cpp01.pdf](../subjects/cpp01.pdf)
+- **Root documentation:** [../README.md](../README.md)
 
 ## Overview
 
-This module dives deep into **memory management** in C++
+Module 01 is about object lifetime and about the difference between pointers and references. It also introduces member-function pointers, C++ file streams and the `switch` statement. Seven exercises build a small toolkit that will be reused in later modules.
 
-## Learning Objectives
+## Learning objectives
 
-- Understanding the difference between **stack** and **heap** allocation
-- Managing **dynamic memory** allocation and preventing memory leaks
-- Working with **pointers** and **references** effectively
-- Implementing proper **constructors** and **destructors**
-- Handling **dynamic arrays** of objects
-- Mastering **file I/O** operations in C++
-- Using **function pointers** to create flexible code architecture
-- Understanding **object composition** and lifetime management
+- Choose between stack and heap allocation.
+- Allocate and release objects correctly with `new` and `delete`/`delete[]`.
+- Understand pointers versus references.
+- Use references as class members and function parameters.
+- Use pointers to member functions instead of long `if`/`else` chains.
+- Read and write files with `std::ifstream` and `std::ofstream`.
+- Use `switch` with explicit control flow.
 
-## Key Concepts
+## Key concepts
 
-### Stack vs Heap Allocation
-- **Stack**: Automatic storage duration, fast allocation/deallocation, limited size
-- **Heap**: Dynamic storage duration, manual management required, larger available space
+### Stack versus heap
 
-### Pointers vs References
-- **Pointers**: Can be reassigned, can be null, use `*` and `->` operators
-- **References**: Cannot be reassigned, cannot be null, direct access to object
+Stack objects are destroyed automatically at the end of their scope. Heap objects live until they are explicitly deleted. A function that returns a pointer to a local object is a bug; a function that returns a heap object transfers ownership to the caller.
 
-### Memory Management
-- Use `new` and `delete` for single objects
-- Use `new[]` and `delete[]` for arrays
-- Always match allocation with appropriate deallocation
-- Implement proper destructors to prevent memory leaks
+### Pointers versus references
 
-### Function Pointers
-Enable dynamic function selection at runtime, useful for implementing strategy patterns and avoiding long conditional chains.
+- A pointer can be null, can be reassigned and needs dereferencing.
+- A reference cannot be null, cannot be reseated and behaves like an alias.
+- A class that must always have a valid object can store a reference; a class that may not have one must store a pointer.
 
-## Project Structure
+### Member-function pointers
 
-```
-CPP_Module_01/
-├── ex00/          # BraiiiiiiinnnzzzZ - Basic Memory Management
-├── ex01/          # Moar brainz! - Dynamic Arrays
-├── ex02/          # HI THIS IS BRAIN - Pointers & References
-├── ex03/          # Unnecessary violence - Object Composition
-├── ex04/          # Sed is for losers - File I/O & String Processing
-├── ex05/          # Harl 2.0 - Function Pointers
-├── ex06/          # Harl filter - Switch Statements & Filtering
-└── README.md      # This file
-```
+An array of `{level, &Harl::function}` pairs lets `complain()` dispatch without a long conditional chain.
+
+### File streams
+
+`std::ifstream` and `std::ofstream` are the C++ replacements for `FILE*` and the C file functions, which are forbidden in this module.
 
 ## Exercises
 
-### ex00: BraiiiiiiinnnzzzZ
-**Objective:** Master the fundamentals of object lifecycle and memory allocation patterns.
+### ex00 - BraiiiiiiinnnzzzZ
 
-**Description:**
-Create a `Zombie` class that demonstrates the crucial differences between stack and heap allocation. The class must include:
+- **Directory:** `ex00/`
+- **Files:** `Makefile`, `main.cpp`, `Zombie.{h,hpp}`, `Zombie.cpp`, `newZombie.cpp`, `randomChump.cpp`
+- `Zombie` has a private `name` and `announce()` printing `<name>: BraiiiiiiinnnzzzZ...`.
+- `newZombie(std::string name)` allocates a zombie with `new`, names it and returns it so it can be used outside the function scope.
+- `randomChump(std::string name)` creates a zombie on the stack, makes it announce itself and lets it die at the end of the function.
+- The destructor prints a debug message containing the zombie name.
+- The exercise asks you to justify when stack allocation is enough and when heap allocation is needed.
 
-- **Private Attributes:**
-  - `std::string name` - stores the zombie's identifier
+### ex01 - Moar brainz!
 
-- **Public Methods:**
-  - `void announce()` - displays the zombie's announcement message
+- **Directory:** `ex01/`
+- **Files:** `Makefile`, `main.cpp`, `Zombie.{h,hpp}`, `Zombie.cpp`, `zombieHorde.cpp`
+- `Zombie* zombieHorde(int N, std::string name)` allocates N zombies in a **single allocation** and initializes all of them with the same name.
+- It returns a pointer to the first zombie.
+- The caller frees the horde with `delete[]`.
+- Test it by calling `announce()` on every zombie and checking for leaks.
 
-- **Global Functions:**
-  - `Zombie* newZombie(std::string name)` - allocates a zombie on the heap
-  - `void randomChump(std::string name)` - creates a zombie on the stack
+### ex02 - HI THIS IS BRAIN
 
-**Key Learning Points:**
-- Objects created on the stack are automatically destroyed when going out of scope
-- Objects created on the heap must be manually destroyed using `delete`
-- Proper destructor implementation for resource cleanup
-- Understanding when to use stack vs heap allocation
+- **Directory:** `ex02/`
+- **Files:** `Makefile`, `main.cpp`
+- Create a string initialized to `"HI THIS IS BRAIN"`.
+- Create `stringPTR`, a pointer to the string, and `stringREF`, a reference to the string.
+- Print the address of the variable, the address held by the pointer and the address held by the reference.
+- Print the value of the variable, the value pointed to by the pointer and the value referred to by the reference.
+- The goal is to show that a reference is another name for the same object.
 
-**Implementation Details:**
-The destructor should print a debug message to track object destruction, helping visualize the difference in object lifetimes between stack and heap allocated zombies.
+### ex03 - Unnecessary violence
 
----
+- **Directory:** `ex03/`
+- **Files:** `Makefile`, `main.cpp`, `Weapon.{h,hpp}`, `Weapon.cpp`, `HumanA.{h,hpp}`, `HumanA.cpp`, `HumanB.{h,hpp}`, `HumanB.cpp`
+- `Weapon` has a private `std::string type`, `getType()` returning a constant reference and `setType()`.
+- `HumanA` always has a weapon and receives it in its constructor. It stores a reference to `Weapon`.
+- `HumanB` may not have a weapon and receives it later through `setWeapon()`. It stores a pointer to `Weapon`.
+- Both print `<name> attacks with their <weapon type>`.
+- The exercise is about choosing a reference when the object is guaranteed and a pointer when it is optional.
 
-### ex01: Moar brainz!
-**Objective:** Master dynamic array allocation and prevent memory leaks in object arrays.
+Expected output of the reference test:
 
-**Description:**
-Implement a function that creates and manages multiple zombie objects in a single memory allocation:
-
-```cpp
-Zombie* zombieHorde(int N, std::string name);
+```text
+Bob attacks with their crude spiked club
+Bob attacks with their some other type of club
+Jim attacks with their crude spiked club
+Jim attacks with their some other type of club
 ```
 
-**Requirements:**
-- Allocate `N` zombies in a single memory block using `new[]`
-- Initialize all zombies with the provided name
-- Return a pointer to the first zombie in the array
-- Ensure proper cleanup with `delete[]` in the calling code
+### ex04 - Sed is for losers
 
-**Key Learning Points:**
-- Dynamic array allocation vs individual object allocation
-- Proper use of `new[]` and `delete[]` operators
-- Constructor behavior in array allocation
-- Memory layout of object arrays
-- Preventing memory leaks in dynamic arrays
+- **Directory:** `ex04/`
+- **Files:** `Makefile`, `main.cpp`, `*.cpp`, `*.{h,hpp}`
+- The program takes three parameters: a filename, `s1` and `s2`.
+- It copies the file to `<filename>.replace`, replacing every occurrence of `s1` with `s2`.
+- `std::string::replace` is forbidden.
+- C file-manipulation functions are forbidden.
+- All other `std::string` member functions are allowed.
+- Handle missing files, empty strings and invalid arguments.
 
-**Implementation Considerations:**
-The function must handle edge cases like `N <= 0` and ensure all zombies are properly constructed before returning the array pointer.
+### ex05 - Harl 2.0
 
----
+- **Directory:** `ex05/`
+- **Files:** `Makefile`, `main.cpp`, `Harl.{h,hpp}`, `Harl.cpp`
+- `Harl` has private `debug()`, `info()`, `warning()` and `error()` member functions.
+- `complain(std::string level)` calls the matching function through an array of pointers to member functions.
+- A forest of `if`/`else if`/`else` is not accepted.
 
-### ex02: HI THIS IS BRAIN
-**Objective:** Understand the fundamental differences and use cases of pointers and references.
+### ex06 - Harl filter
 
-**Description:**
-Create a program that demonstrates pointer and reference behavior through direct comparison:
+- **Directory:** `ex06/`
+- **Files:** `Makefile`, `main.cpp`, `Harl.{h,hpp}`, `Harl.cpp`
+- The program takes one of the four levels as an argument and prints every message from that level and above.
+- `WARNING` prints `WARNING` and `ERROR`; `DEBUG` prints all four levels.
+- An unknown level prints `[ Probably complaining about insignificant problems ]`.
+- The subject explicitly asks for a `switch` statement.
+- Completing this exercise is **not mandatory** to pass the module.
 
-**Program Requirements:**
-1. Create a string variable initialized with `"HI THIS IS BRAIN"`
-2. Declare a pointer (`stringPTR`) pointing to the string
-3. Declare a reference (`stringREF`) referencing the same string
-4. Print memory addresses of the original variable, pointer, and reference
-5. Print values accessed through the original variable, pointer, and reference
+## Build and run
 
-**Expected Output Format:**
-```
-The memory address of the string variable: [address]
-The memory address held by stringPTR: [address]
-The memory address held by stringREF: [address]
-The value of the string variable: [value]
-The value pointed to by stringPTR: [value]
-The value pointed to by stringREF: [value]
+```bash
+cd CPP_Module_01/ex00 && make && ./Zombie
+cd CPP_Module_01/ex02 && make && ./brain
+cd CPP_Module_01/ex04 && make && ./program file.txt old new
+cd CPP_Module_01/ex06 && make && ./violence WARNING
 ```
 
-**Key Learning Points:**
-- References are aliases to existing objects
-- Pointers store memory addresses
-- Both provide indirect access to objects
-- References cannot be reassigned or null
-- Pointer arithmetic and dereferencing concepts
+## Evaluation notes
 
----
-
-### ex03 - ex06
-**Descripción:**
-Ejercicios adicionales sobre entrada/salida de archivos, referencias y gestión de memoria.
-
----
-**Description:**
-
-This exercise demonstrates the use of pointers and references.
-
-The program must:
-- Create a string variable initialized with `"HI THIS IS BRAIN"`.
-- Declare a pointer (`stringPTR`) and a reference (`stringREF`) to that string.
-- Print the memory addresses and values from both the pointer and reference.
-
-**Objective:**
-Understand the similarities and differences between pointers and references in C++.
-
----
-
-## Exercise 03: Unnecessary violence
-
-**Description:**
-
-Implement three classes:
-- `Weapon`
-- `HumanA`
-- `HumanB`
-
-The `Weapon` class should:
-- Contain a private string `type`.
-- Provide `getType()` and `setType()` methods.
-
-`HumanA` and `HumanB`:
-- Each have a name and a weapon.
-- Use `attack()` to display an attack message.
-
-**Objective:**
-Demonstrate how references (HumanA) and pointers (HumanB) behave differently in class composition.
-
----
-
-##  Exercise 04: Sed is for losers
-
-**Description:**
-
-Create a program that replaces all occurrences of a string `s1` with `s2` in a file.
-
-The program must:
-- Take three parameters: a filename, `s1`, and `s2`.
-- Write the modified content into a new file named `<filename>.replace`.
-- Handle errors gracefully.
-
-**Objective:**
-Reinforce file I/O operations and basic string processing in C++.
-
----
-
-##  Exercise 05: Harl 2.0
-
-**Description:**
-
-Create a `Harl` class that simulates a logging system.
-
-The class should have:
-- Four private methods: `debug()`, `info()`, `warning()`, and `error()`.
-- One public method: `complain(std::string level)` that calls the appropriate private method.
-
-**Objective:**
-Use function pointers to avoid lengthy `if/else` chains and improve code modularity.
-
----
-
-##  Exercise 06: Harl filter
-
-**Description:**
-
-Filter Harl’s complaints based on severity level.
-
-The program:
-- Takes one argument: the log level.
-- Prints all messages from the given level and above.
-- Handles invalid input properly.
-
-**Objective:**
-Use the `switch` statement effectively and reinforce the use of function pointers.
-
----
-
-# Extra
-
-CPP Module 01 is packed with practical examples that illustrate the importance of memory management, object lifetime, references, and file handling. From dynamic zombie hordes to modular complaint filtering, each task builds essential C++ skills that are crucial for larger projects and systems programming.
-
--Born2code
-![42madrid](https://github.com/ismaelucky342/Born2code/assets/153450550/3a377f34-9156-4eff-b04b-71c4b128523e)
+- No leaks: every `new` must have a matching `delete`, every `new[]` a matching `delete[]`.
+- Do not return pointers or references to local variables.
+- `HumanA` must use a reference and `HumanB` a pointer; the evaluator will ask why.
+- `ex04` must not use `std::string::replace` or C file functions.
+- `ex05` and `ex06` must use member-function pointers and `switch` respectively.
+- STL containers and algorithms are forbidden in this module.

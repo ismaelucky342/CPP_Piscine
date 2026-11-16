@@ -20,7 +20,7 @@ Cat::Cat()
 	type = "Cat";
 }
 
-Cat::Cat(Cat &tocopy)
+Cat::Cat(Cat &tocopy) : Animal(tocopy)
 {
 	if (INFOS)
 		std::cout << BLUE << "Cat  --  Copy constructor called." << RESET << std::endl;

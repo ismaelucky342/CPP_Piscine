@@ -6,39 +6,223 @@
 /*   By: ismherna <ismherna@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 23:45:59 by ismherna          #+#    #+#             */
-/*   Updated: 2025/03/20 23:46:00 by ismherna         ###   ########.fr       */
+/*   Updated: 2026/11/16 12:00:00 by ismherna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 
+#include <climits>
+#include <cctype>
+#include <ctime>
+#include <iomanip>
+
+namespace
+{
+	struct Pair
+	{
+		int	small;
+		int	large;
+	};
+
+	struct PairLess
+	{
+		bool	operator()(Pair const &a, Pair const &b) const
+		{
+			return (a.large < b.large);
+		}
+	};
+
+	std::vector<size_t>	jacobsthalOrder(size_t size)
+	{
+		std::vector<size_t>	order;
+		size_t				previous;
+		size_t				first;
+		size_t				second;
+		size_t				high;
+
+		if (size <= 1)
+			return (order);
+		previous = 1;
+		first = 1;
+		second = 3;
+		while (previous < size)
+		{
+			high = std::min(second, size);
+			for (size_t i = high; i > previous; --i)
+				order.push_back(i - 1);
+			previous = high;
+			size_t next = second + 2 * first;
+			first = second;
+			second = next;
+		}
+		return (order);
+	}
+
+	void	insertPair(std::vector<Pair> &chain, Pair const &value)
+	{
+		std::vector<Pair>::iterator	position;
+
+		position = std::lower_bound(chain.begin(), chain.end(), value, PairLess());
+		chain.insert(position, value);
+	}
+
+	void	sortPairs(std::vector<Pair> &pairs)
+	{
+		if (pairs.size() < 2)
+			return ;
+
+		bool				hasStraggler;
+		Pair				straggler;
+		std::vector<Pair>	small;
+		std::vector<Pair>	large;
+
+		hasStraggler = (pairs.size() % 2 != 0);
+		if (hasStraggler)
+		{
+			straggler = pairs.back();
+			pairs.pop_back();
+		}
+		small.reserve(pairs.size() / 2);
+		large.reserve(pairs.size() / 2);
+		for (size_t i = 0; i + 1 < pairs.size(); i += 2)
+		{
+			if (pairs[i].large < pairs[i + 1].large)
+			{
+				small.push_back(pairs[i]);
+				large.push_back(pairs[i + 1]);
+			}
+			else
+			{
+				small.push_back(pairs[i + 1]);
+				large.push_back(pairs[i]);
+			}
+		}
+		sortPairs(large);
+
+		std::vector<Pair>	chain;
+		for (size_t i = 0; i < large.size(); ++i)
+			chain.push_back(large[i]);
+		insertPair(chain, small[0]);
+		std::vector<size_t>	order = jacobsthalOrder(small.size());
+		for (size_t i = 0; i < order.size(); ++i)
+			insertPair(chain, small[order[i]]);
+		if (hasStraggler)
+			insertPair(chain, straggler);
+		pairs.swap(chain);
+	}
+
+	template <typename Container>
+	void	insertValue(Container &chain, int value)
+	{
+		typename Container::iterator	position;
+
+		position = std::lower_bound(chain.begin(), chain.end(), value);
+		chain.insert(position, value);
+	}
+
+	template <typename Container>
+	void	mergeInsertionSort(Container &values)
+	{
+		if (values.size() < 2)
+			return ;
+
+		bool	hasStraggler;
+		int		straggler;
+		std::vector<Pair>	pairs;
+
+		hasStraggler = (values.size() % 2 != 0);
+		if (hasStraggler)
+		{
+			straggler = values.back();
+			values.pop_back();
+		}
+		pairs.reserve(values.size() / 2);
+		for (size_t i = 0; i + 1 < values.size(); i += 2)
+		{
+			Pair pair;
+			if (values[i] < values[i + 1])
+			{
+				pair.small = values[i];
+				pair.large = values[i + 1];
+			}
+			else
+			{
+				pair.small = values[i + 1];
+				pair.large = values[i];
+			}
+			pairs.push_back(pair);
+		}
+		sortPairs(pairs);
+
+		Container	chain;
+		for (size_t i = 0; i < pairs.size(); ++i)
+			chain.push_back(pairs[i].large);
+		insertValue(chain, pairs[0].small);
+		std::vector<size_t>	order = jacobsthalOrder(pairs.size());
+		for (size_t i = 0; i < order.size(); ++i)
+			insertValue(chain, pairs[order[i]].small);
+		if (hasStraggler)
+			insertValue(chain, straggler);
+		values.swap(chain);
+	}
+
+	bool	parsePositiveInt(std::string const &text, int &value)
+	{
+		long	result;
+
+		if (text.empty())
+			return (false);
+		result = 0;
+		for (size_t i = 0; i < text.size(); ++i)
+		{
+			if (!std::isdigit(static_cast<unsigned char>(text[i])))
+				return (false);
+			result = result * 10 + (text[i] - '0');
+			if (result > INT_MAX)
+				return (false);
+		}
+		value = static_cast<int>(result);
+		return (true);
+	}
+}
+
+PmergeMe::PmergeMe()
+{
+}
+
 PmergeMe::PmergeMe(int ac, char **av)
 {
-	for (int i = 1; i < ac; i++)
-			add(std::atoi(av[i]));
+	if (ac < 2)
+		throw InvalidInput();
+	for (int i = 1; i < ac; ++i)
+	{
+		std::string	text(av[i]);
+		int			value;
 
-	std::cout << YELLOW << "Before: " << RESET;
-	for (std::size_t i = 0; i < _vector.size(); i++)
-		std::cout << _vector[i] << " ";
-	std::cout << std::endl;
+		if (!parsePositiveInt(text, value) || value <= 0)
+			throw InvalidInput();
+		add(value);
+	}
+	if (_vector.empty())
+		throw InvalidInput();
 
-	clock_t	start_vector = clock();
+	print("Before:");
+	clock_t	startVector = std::clock();
 	sortVector();
-	clock_t	end_vector = clock();
-	double	time_vector = double(end_vector - start_vector) / CLOCKS_PER_SEC;
-
-	clock_t	start_deque = clock();
+	clock_t	endVector = std::clock();
+	clock_t	startDeque = std::clock();
 	sortDeque();
-	clock_t	end_deque = clock();
-	double	time_deque = double(end_deque - start_deque) / CLOCKS_PER_SEC;
+	clock_t	endDeque = std::clock();
 
-	std::cout << GREEN << "After: " << RESET;
-	for (std::size_t i = 0; i < _vector.size(); i++)
-		std::cout << _vector[i] << " ";
-	std::cout << std::endl;
-
-	std::cout << CYAN << "Time to process a range of " << ac - 1 << " elements with std::vector : " << time_vector << " us" << RESET << std::endl;
-	std::cout << CYAN << "Time to process a range of " << ac - 1 << " elements with std::deque : " << time_deque << " us" << RESET << std::endl;
+	print("After:");
+	double	timeVector = 1000000.0 * static_cast<double>(endVector - startVector) / CLOCKS_PER_SEC;
+	double	timeDeque = 1000000.0 * static_cast<double>(endDeque - startDeque) / CLOCKS_PER_SEC;
+	std::cout << std::fixed << std::setprecision(5);
+	std::cout << CYAN << "Time to process a range of " << _vector.size()
+		<< " elements with std::vector : " << timeVector << " us" << RESET << std::endl;
+	std::cout << CYAN << "Time to process a range of " << _deque.size()
+		<< " elements with std::deque : " << timeDeque << " us" << RESET << std::endl;
 }
 
 PmergeMe::PmergeMe(PmergeMe const &src)
@@ -53,16 +237,16 @@ PmergeMe &PmergeMe::operator=(PmergeMe const &src)
 		_vector = src._vector;
 		_deque = src._deque;
 	}
-	return *this;
+	return (*this);
 }
 
-PmergeMe::~PmergeMe(){}
+PmergeMe::~PmergeMe()
+{
+}
 
 void	PmergeMe::add(int n)
 {
-	if (n < 0)
-		throw NegativeNumber();
-	for (std::size_t i = 0; i < _vector.size(); i++)
+	for (size_t i = 0; i < _vector.size(); ++i)
 	{
 		if (_vector[i] == n)
 			throw DuplicateNumber();
@@ -71,69 +255,30 @@ void	PmergeMe::add(int n)
 	_deque.push_back(n);
 }
 
-const char* PmergeMe::DuplicateNumber::what() const throw()
-{
-	return RED "Duplicate number" RESET;
-}
-
-const char* PmergeMe::NegativeNumber::what() const throw()
-{
-	return RED "Negative number" RESET;
-}
-
 void	PmergeMe::sortVector()
 {
-	sort(_vector);
+	mergeInsertionSort(_vector);
 }
 
 void	PmergeMe::sortDeque()
 {
-	sort(_deque);
+	mergeInsertionSort(_deque);
 }
 
-template<typename T>
-void PmergeMe::insert(T& container)
+void	PmergeMe::print(std::string const &label) const
 {
-	typedef typename T::iterator Iterator;
-
-	for (Iterator it = container.begin(); it != container.end(); ++it)
-	{
-		typename T::value_type currentValue = *it;		// The value to be inserted
-		Iterator insertPos = it;						// Position to insert the currentValue
-
-		while (insertPos != container.begin())			// Move elements that are greater than currentValue to the right
-		{
-			Iterator prev = insertPos;
-			--prev;
-			
-			if (*prev > currentValue)
-			{
-				*insertPos = *prev;
-				insertPos = prev;
-			}
-			else
-			{
-				break;
-			}
-		}
-		*insertPos = currentValue;		// Place the currentValue in its correct position
-	}
+	std::cout << YELLOW << label << RESET << " ";
+	for (size_t i = 0; i < _vector.size(); ++i)
+		std::cout << _vector[i] << " ";
+	std::cout << std::endl;
 }
 
-template <typename T>
-void PmergeMe::sort(T& m)
+const char* PmergeMe::InvalidInput::what() const throw()
 {
-	if (m.size() <= 2)
-		return insert(m);
+	return ("Invalid input");
+}
 
-	typename T::iterator mid = m.begin();
-	std::advance(mid, m.size() / 2);
-
-	T left(m.begin(), mid);
-	T right(mid, m.end());
-
-	sort(left);
-	sort(right);
-
-	std::merge(left.begin(), left.end(), right.begin(), right.end(), m.begin());
+const char* PmergeMe::DuplicateNumber::what() const throw()
+{
+	return ("Duplicate number");
 }

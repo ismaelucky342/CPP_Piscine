@@ -1,5 +1,12 @@
 
 #include "Span.hpp"
+#include <ctime>
+
+void writeAndBuildSpan();
+void testSpanOperations();
+void testExceptions();
+void testRangeAndIndex();
+std::string intToStr(int val);
 
 Span val10m(MAX_VAL);
 

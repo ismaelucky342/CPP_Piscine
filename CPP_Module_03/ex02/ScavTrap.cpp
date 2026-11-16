@@ -33,10 +33,9 @@ ScavTrap::ScavTrap(std::string name)
 
 }
 
-ScavTrap::ScavTrap(const ScavTrap &ref)
+ScavTrap::ScavTrap(const ScavTrap &ref) : ClapTrap(ref)
 {
 	std::cout << BLUE "ScavTrap: Copy constructor called" RESET << std::endl;
-	*this = ref;
 }
 
 ScavTrap &ScavTrap::operator=(const ScavTrap &ref)

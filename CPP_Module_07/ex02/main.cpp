@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ismherna <ismherna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ismherna <ismherna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/10 23:44:44 by ismherna          #+#    #+#             */
-/*   Updated: 2026/11/11 16:11:17 by ismherna         ###   ########.fr       */
+/*   Created: 2024/12/10 23:44:44 by ismherna          #+#    #+#             */
+/*   Updated: 2024/12/11 02:13:55 by ismherna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Array.hpp"
-
-static void test_build_array();
-static void test_add_element();
-static void test_copy_array();
-static void test_opindex_exception_out_of_range();
-static void test_op_index_assignment();
 
 int main()
 {

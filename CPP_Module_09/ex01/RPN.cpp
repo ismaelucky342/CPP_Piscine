@@ -67,7 +67,10 @@ RPN::RPN(const RPN& src)
 RPN& RPN::operator=(const RPN& rhs)
 {
 	if (this != &rhs)
+	{
 		this->_stack = rhs._stack;
+		this->_value = rhs._value;
+	}
 	return *this;
 }
 

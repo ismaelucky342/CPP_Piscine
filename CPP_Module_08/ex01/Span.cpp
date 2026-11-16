@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Span.hpp"
+#include <limits>
 
 Span::Span():
 _store(0),
@@ -61,7 +62,7 @@ int Span::getValMax() const{
 
 void Span::addNumber(int num) {
 	if (_len_stored >= _n_max)
-		throw std::invalid_argument(RED "ERROR: Invalid Arg" RESET);
+		throw std::invalid_argument("ERROR: Invalid Arg");
 	_store.push_back(num);
 	_len_stored = _store.size();
 	if (num < _val_min)
@@ -75,11 +76,11 @@ int &Span::operator[](unsigned int i) {
 	if (i < _len_stored)
 		return this->_store[i];
 	else
-		throw std::out_of_range(RED "ERROR: Index is out of bounds" RESET);
+		throw std::out_of_range("ERROR: Index is out of bounds");
 }
 int Span::shortestSpan() {
 	if (_len_stored == 0 || _len_stored == 1)
-		throw std::invalid_argument(RED "ERROR: There are not enough numbers" RESET);
+		throw std::invalid_argument("ERROR: There are not enough numbers");
 	std::vector<int> sorted_store = _store;
 	std::sort(sorted_store.begin(), sorted_store.end());
 
@@ -94,7 +95,7 @@ int Span::shortestSpan() {
 
 int Span::longestSpan() {
 	if (_len_stored == 0 || _len_stored == 1)
-		throw std::invalid_argument(RED "ERROR: There are not enough numbers" RESET);
+		throw std::invalid_argument("ERROR: There are not enough numbers");
 
 	return _val_max - _val_min;
 }

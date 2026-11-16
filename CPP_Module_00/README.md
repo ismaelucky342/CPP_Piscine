@@ -1,205 +1,124 @@
-<img width="888" height="246" alt="imagen" src="https://github.com/user-attachments/assets/0c6b61c8-3cbd-4cf9-ba1c-57fab534eac6" />
+# CPP Module 00 - Namespaces, Classes, Member Functions and Stdio Streams
 
-# CPP Module 00 - Introduction to C++
+<img width="888" height="246" alt="CPP Module 00" src="https://github.com/user-attachments/assets/0c6b61c8-3cbd-4cf9-ba1c-57fab534eac6" />
+
+- **Rank:** 04
+- **Language:** C++98
+- **Subject:** [subjects/cpp00.pdf](../subjects/cpp00.pdf)
+- **Root documentation:** [../README.md](../README.md)
 
 ## Overview
 
-This module introduces the fundamental concepts of C++ programming, focusing on the transition from C to C++98. Through three progressive exercises, you'll learn basic C++ syntax, input/output operations, string manipulation, and your first steps into object-oriented programming with classes and methods.
+Module 00 is the entry point of the CPP piscine. It assumes that you already know how to program in C and introduces the parts of C++ needed to write small, clean programs: namespaces, standard streams, `std::string`, classes, member functions, access control, initialization lists, `const`, `static` and output formatting.
 
-## Learning Objectives
+The three exercises are deliberately small. The goal is not to build a large application; it is to stop writing C and start writing C++.
 
-- Understanding basic C++ program structure and syntax
-- Mastering command-line argument handling
-- Learning string manipulation and character processing
-- Implementing basic classes with member functions
-- Understanding input/output streams in C++
-- Exploring the concept of encapsulation
+## Learning objectives
 
-## Key Concepts
+- Understand the structure of a C++ program.
+- Use `std::cout` and `std::cin` instead of `printf` and `scanf`.
+- Use `std::string` instead of C strings.
+- Create classes with private attributes and public member functions.
+- Use constructors and initialization lists.
+- Use `const` and `static` correctly.
+- Format output with `iomanip`.
+- Manage a fixed-size collection without dynamic allocation.
 
-### C++ vs C Differences
-- **Namespaces**: Using `std::` namespace for standard library functions
-- **Input/Output**: `std::cout`, `std::cin` instead of `printf`/`scanf`
-- **String handling**: `std::string` class instead of character arrays
-- **Function overloading**: Multiple functions with the same name but different parameters
+## Key concepts
 
-### Object-Oriented Programming Basics
-- **Classes**: User-defined data types that encapsulate data and functions
-- **Encapsulation**: Hiding internal implementation details
-- **Member functions**: Functions that operate on class data
-- **Access specifiers**: `private`, `public`, and `protected` keywords
+### Namespaces
 
-## Project Structure
+The standard library lives in the `std` namespace. Writing `using namespace std;` is forbidden by the general rules, so every standard name must be qualified:
 
+```cpp
+std::cout << "Hello" << std::endl;
+std::string name;
 ```
-CPP_Module_00/
-├── ex00/          # Megaphone - Command Line & String Processing
-├── ex01/          # My Awesome PhoneBook - Classes & I/O
-├── ex02/          # The Job Of Your Dreams - Advanced OOP
-└── README.md      # This file
-```
+
+### Streams
+
+`std::cout`, `std::cerr` and `std::cin` are type-safe and extensible. They replace `printf`, `fprintf` and `scanf`, which are forbidden.
+
+### Classes and encapsulation
+
+A class groups data and behaviour. Attributes are private by default in good designs; the public interface exposes only what users need. Member functions can be defined inside or outside the class body.
+
+### Fixed-size storage
+
+Exercise 01 explicitly forbids dynamic allocation. The phonebook stores its contacts in a fixed array and reuses slots when the ninth contact arrives.
 
 ## Exercises
 
-### ex00: Megaphone
-**Objective:** Master basic C++ syntax, command-line arguments, and string manipulation.
+### ex00 - Megaphone
 
-**Description:**
-Create a program that converts command-line arguments to uppercase and prints them. If no arguments are provided, display a default loud message.
+- **Directory:** `ex00/`
+- **Files:** `Makefile`, `megaphone.cpp`
+- **Goal:** print every command-line argument in uppercase, concatenated without separators.
+- **No arguments:** print `* LOUD AND UNBEARABLE FEEDBACK NOISE *`.
+- **Constraints:** use C++ streams; no `printf`.
 
-**Requirements:**
-- Accept multiple command-line arguments
-- Convert all characters to uppercase
-- Print arguments concatenated without spaces
-- Handle the case of no arguments with a specific message
+Example:
 
-**Key Learning Points:**
-- Basic C++ program structure (`main` function)
-- Command-line argument processing (`argc`, `argv`)
-- String manipulation using C++ methods
-- Character case conversion
-- Output using `std::cout`
-
-**Implementation Details:**
-```cpp
-// Example usage:
-./megaphone hello world
-// Output: HELLOWORLD
-
-./megaphone
-// Output: * LOUD AND UNBEARABLE FEEDBACK NOISE *
+```text
+$> ./megaphone "shhhhh... I think the students are asleep..."
+SHHHHH... I THINK THE STUDENTS ARE ASLEEP...
+$> ./megaphone Damnit " ! " "Sorry students, I thought this thing was off."
+DAMNIT ! SORRY STUDENTS, I THOUGHT THIS THING WAS OFF.
+$> ./megaphone
+* LOUD AND UNBEARABLE FEEDBACK NOISE *
 ```
 
----
+### ex01 - My Awesome PhoneBook
 
-### ex01: My Awesome PhoneBook
-**Objective:** Implement your first C++ class with member functions and data encapsulation.
+- **Directory:** `ex01/`
+- **Files:** `Makefile`, `*.cpp`, `*.{h,hpp}`
+- **Classes:** `PhoneBook` and `Contact`.
+- **Capacity:** 8 contacts. A ninth contact replaces the oldest one.
+- **Dynamic allocation:** forbidden.
+- **Commands:** `ADD`, `SEARCH`, `EXIT`. Any other input is ignored.
 
-**Description:**
-Create a simple phonebook application using classes that can store and retrieve contact information.
+`ADD` asks for first name, last name, nickname, phone number and darkest secret, one field at a time. A contact with an empty field is rejected.
 
-**Class Design:**
+`SEARCH` displays the saved contacts as a table with four columns: index, first name, last name and nickname. Each column is 10 characters wide, right-aligned, separated by `|`. Text longer than 10 characters is truncated and its last visible character becomes a dot. The program then asks for an index and prints the selected contact one field per line.
 
-1. **Contact Class:**
-   - Private attributes: first name, last name, nickname, phone number, darkest secret
-   - Public methods: getters and setters for all attributes
-   - Input validation for all fields
+`EXIT` quits and loses all contacts.
 
-2. **PhoneBook Class:**
-   - Private attribute: array of Contact objects (max 8 contacts)
-   - Private attribute: current number of contacts
-   - Public methods: `addContact()`, `searchContact()`, `displayContacts()`
+The exercise expects `iomanip` (`std::setw`, `std::right`) for the table.
 
-**Program Features:**
-- **ADD**: Add a new contact (replace oldest if phonebook is full)
-- **SEARCH**: Display all contacts in a formatted table, then show detailed view
-- **EXIT**: Quit the program
+This implementation links against `readline` and `ncurses` and provides a friendlier prompt. The Makefile contains the required `-lreadline -lncurses` flags.
 
-**Key Learning Points:**
-- Class definition and implementation
-- Data encapsulation and access control
-- Member function implementation
-- Array management within classes
-- Input validation and error handling
-- Formatted output using `std::setw()` and `std::setfill()`
+### ex02 - The Job Of Your Dreams
 
-**Implementation Requirements:**
-- Contact information cannot be empty
-- Display contacts in a neat table format (10 characters wide per column)
-- Truncate long fields with a dot if they exceed column width
-- Handle invalid input gracefully
+- **Directory:** `ex02/`
+- **Files:** `Makefile`, `Account.cpp`, `Account.hpp`, `tests.cpp`
+- **Goal:** recreate the missing `Account.cpp`.
+- `Account.hpp`, `tests.cpp` and a reference log are provided by the subject.
+- The output of `tests.cpp` must match the reference log, except for timestamps.
+- The exercise practices static members, constructors, destructors, output formatting and deducing behaviour from a header plus a log.
+- Completing this exercise is **not mandatory** to pass the module.
 
----
-
-### ex02: The Job Of Your Dreams
-**Objective:** Understand static members, class instantiation, and log file recreation.
-
-**Description:**
-Recreate the behavior of a given log file by implementing an `Account` class that manages bank account operations and statistics.
-
-**Account Class Features:**
-
-**Static Members:**
-- Track total number of accounts
-- Track total amount across all accounts
-- Track total number of deposits and withdrawals
-
-**Instance Members:**
-- Account index (unique identifier)
-- Amount (current balance)
-- Number of deposits and withdrawals for this account
-
-**Required Methods:**
-- `makeDeposit(unsigned int deposit)` - add money to account
-- `makeWithdrawal(unsigned int withdrawal)` - withdraw money (if sufficient funds)
-- `checkAmount()` - return current balance
-- `displayStatus()` - show account information
-- `displayAccountsInfos()` - static method to show global statistics
-
-**Key Learning Points:**
-- Static vs instance members
-- Static member functions
-- Object initialization and destruction
-- Global state management
-- Timestamp formatting
-- Log file analysis and recreation
-
-**Implementation Challenges:**
-- Must match exact log format including timestamps
-- Handle insufficient funds for withdrawals
-- Maintain accurate global statistics
-- Proper constructor and destructor behavior
-
-**Expected Log Format:**
-```
-[19920104_091532] index:0;amount:42;created
-[19920104_091532] accounts:1;total:42;deposits:0;withdrawals:0
-[19920104_091532] index:0;amount:54;deposits:1;withdrawals:0
-...
-```
-
----
-
-## Build Instructions
-
-Each exercise includes a Makefile for compilation:
+## Build and run
 
 ```bash
-cd ex00
-make
-./megaphone [arguments...]
-
-cd ../ex01
-make
-./phonebook
-
-cd ../ex02
-make
-./account
+cd CPP_Module_00/ex00 && make && ./megaphone "hello"
+cd CPP_Module_00/ex01 && make && ./phonebook
+cd CPP_Module_00/ex02 && make && ./globalbanksters
 ```
 
-## C++ Best Practices Introduced
+All Makefiles use:
 
-1. **Header Guards**: Prevent multiple inclusion of header files
-2. **Const Correctness**: Use `const` keyword appropriately
-3. **Initialization Lists**: Prefer initialization over assignment in constructors
-4. **Naming Conventions**: Consistent naming for classes, functions, and variables
-5. **File Organization**: Separate header (.hpp) and implementation (.cpp) files
+```make
+CXX      = c++
+CXXFLAGS = -std=c++98 -Wall -Wextra -Werror -MMD -MP
+```
 
-## Common Beginner Mistakes to Avoid
+Use `make clean`, `make fclean` and `make re` to manage artifacts.
 
-- **Missing `std::`**: Remember to use namespace prefix or `using namespace std;`
-- **Uninitialized variables**: Always initialize variables before use
-- **Array bounds**: C++ doesn't check array boundaries automatically
-- **Missing const**: Mark methods that don't modify object state as `const`
-- **Public data members**: Use private members with public accessor methods
+## Evaluation notes
 
----
-
-# Extras
-
-These exercises have provided a practical and in-depth understanding of several important aspects of C++ programming. Solutions to real-world problems have been implemented, from basic string and data structure manipulation to the simulation of more complex financial transactions. Each exercise contributed to the development of key skills in program design, data management, and user interaction. The experience gained in these exercises provides a solid foundation for tackling more advanced programming challenges and developing more complex applications in C++.
-
--Born2code
-
-![42madrid](https://github.com/ismaelucky342/Born2code/assets/153450550/3a377f34-9156-4eff-b04b-71c4b128523e)
+- Do not use `printf`, `malloc` or `free`.
+- Do not use STL containers or algorithms. They are allowed only in Modules 08 and 09.
+- The phonebook must not allocate contacts dynamically.
+- The phonebook table must respect the 10-character columns and the truncation rule.
+- Empty contact fields must not be accepted.
+- The `Account` output must match the log except for timestamps; destructor order may vary by compiler.

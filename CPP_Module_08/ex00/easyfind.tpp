@@ -8,15 +8,15 @@
 template <typename T>
 int easyfind(T &container, int target) {
 
-	if (container.size() < 1)
-		throw std::invalid_argument("\033[31mERROR: No arguments\033[0m");
+	if (container.begin() == container.end())
+		throw std::invalid_argument(RED "ERROR: No arguments" RESET);
 
 	typename T::iterator result = std::find(container.begin(), container.end(), target);
 
 	if (result != container.end())
 		return *result;
 	else
-		throw std::invalid_argument("\033[31mERROR: Not found\033[0m");
+		throw std::invalid_argument(RED "ERROR: Not found" RESET);
 }
 
 

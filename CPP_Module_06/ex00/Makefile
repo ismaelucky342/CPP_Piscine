@@ -1,12 +1,15 @@
-NAME = ex00
+NAME		= ex00
+CXX			= c++
+CXXFLAGS	= -std=c++98 -Wall -Wextra -Werror -MMD -MP
 
-CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-
-SRCS = main.cpp src/ScalarConverter.cpp
-OBJS = $(SRCS:.cpp=.o)
+SRCS		= main.cpp src/ScalarConverter.cpp
+OBJS		= $(SRCS:.cpp=.o)
+DEPS		= $(OBJS:.o=.d)
 
 all: $(NAME)
+	@echo "------------------------------------------"
+	@echo "  $(NAME) compiled successfully"
+	@echo "------------------------------------------"
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
@@ -15,7 +18,7 @@ $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(DEPS)
 
 fclean: clean
 	rm -f $(NAME)
@@ -23,3 +26,5 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
+-include $(DEPS)

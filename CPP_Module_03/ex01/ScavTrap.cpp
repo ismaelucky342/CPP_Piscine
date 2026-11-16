@@ -31,11 +31,10 @@ ScavTrap::~ScavTrap()
 	<< std::endl;
 }
 
-ScavTrap::ScavTrap(ScavTrap const& cl)
+ScavTrap::ScavTrap(ScavTrap const& cl) : ClapTrap(cl)
 {
-	std::cout << MAGENTA "ScavTrap operator = called" RESET 
+	std::cout << MAGENTA "ScavTrap copy constructor called" RESET 
 	<< std::endl;
-	operator=(cl);
 }
 
 void		ScavTrap::display(std::ostream& stream) const

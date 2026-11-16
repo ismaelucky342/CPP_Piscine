@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ismherna <ismherna@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/10 19:30:49 by ismherna          #+#    #+#             */
-/*   Updated: 2026/11/11 16:11:17 by ismherna         ###   ########.fr       */
+/*   Created: 2024/12/10 19:30:49 by ismherna          #+#    #+#             */
+/*   Updated: 2026/11/03 18:54:14 by ismherna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@
 /*===============================INCLUDES===================================*/
 
 #include <iostream>
-#include <cstdlib>
+#include <stdlib.h>
 #include <cassert>
 #include <stdexcept>
 #define MAX_VAL 10
+
+template <typename T>
 
 /*================================COLORS=====================================*/
 
@@ -46,10 +48,9 @@
 
 /*=================================CLASS=====================================*/
 
-template <typename T>
 class Array {
 	private:
-		T			*_array;
+		T				*_array;
 		unsigned int	_length;
 	public:
 		Array();
@@ -60,7 +61,17 @@ class Array {
 		T &operator[](unsigned int idx);
 		const T &operator[](unsigned int idx) const;
 		unsigned int size(void) const;
+
 };
+
+
+/*=================================FUNCTIONS=====================================*/
+
+void test_build_array();
+void test_add_element();
+void test_copy_array();
+void test_opindex_exception_out_of_range();
+void test_op_index_assignment();
 
 #include "Array.tpp"
 

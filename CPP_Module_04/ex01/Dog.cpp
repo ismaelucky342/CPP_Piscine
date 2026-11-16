@@ -20,7 +20,7 @@ Dog::Dog()
 	type = "Dog";
 }
 
-Dog::Dog(Dog &tocopy)
+Dog::Dog(Dog &tocopy) : Animal(tocopy)
 {
 	if (INFOS)
 		std::cout << BLUE << "Dog  --  Copy constructor called." << RESET << std::endl;

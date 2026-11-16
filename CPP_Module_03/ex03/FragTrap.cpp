@@ -32,7 +32,7 @@ FragTrap::FragTrap(std::string name)
 	std::cout << BLUE "FragTrap: Default constructor called" RESET << std::endl;
 }
 
-FragTrap::FragTrap(const FragTrap &ref)
+FragTrap::FragTrap(const FragTrap &ref) : ClapTrap(ref)
 {
 	std::cout << GREEN "FragTrap: Copy constructor called" RESET << std::endl;
 	*this = ref;

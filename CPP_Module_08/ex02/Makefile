@@ -1,52 +1,30 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: ismherna <ismherna@student.42madrid.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/10/23 04:06:52 by ismherna          #+#    #+#              #
-#    Updated: 2025/03/20 23:16:09 by ismherna         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+NAME		= mutantStack
+CXX			= c++
+CXXFLAGS	= -std=c++98 -Wall -Wextra -Werror -MMD -MP
 
-NAME = mutantStack
-CC = c++
-CFLAGS = -std=c++98 -Wall -Wextra -Werror 
-SRCS = main.cpp 
-COVFLAGS = #-g -fPIC  -fprofile-arcs -ftest-coverage
-INCLUDE = 
+SRCS		= main.cpp
+OBJS		= $(SRCS:.cpp=.o)
+DEPS		= $(OBJS:.o=.d)
 
-OBJS = ${SRCS:.cpp=.o}
-
-$(NAME): $(OBJS) $(INCLUDE)
-			$(CC) -o $(NAME) $(CFLAGS) $(OBJS)
-			
 all: $(NAME)
-	@echo " "
-	@echo " ██████╗██████╗ ██████╗    ███╗   ███╗ ██████╗ ██████╗ ██╗   ██╗██╗     ███████╗         ██████╗  █████╗ "
-	@echo "██╔════╝██╔══██╗██╔══██╗   ████╗ ████║██╔═══██╗██╔══██╗██║   ██║██║     ██╔════╝        ██╔═████╗██╔══██╗"
-	@echo "██║     ██████╔╝██████╔╝   ██╔████╔██║██║   ██║██║  ██║██║   ██║██║     █████╗          ██║██╔██║╚█████╔╝"
-	@echo "██║     ██╔═══╝ ██╔═══╝    ██║╚██╔╝██║██║   ██║██║  ██║██║   ██║██║     ██╔══╝          ████╔╝██║██╔══██╗"
-	@echo "╚██████╗██║     ██║███████╗██║ ╚═╝ ██║╚██████╔╝██████╔╝╚██████╔╝███████╗███████╗███████╗╚██████╔╝╚█████╔╝"
-	@echo " ╚═════╝╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝ ╚═════╝  ╚════╝ "
-	@echo "                                                                                                          		"
-	@echo "				12/02/2024 - ismherna@student.42.fr - 42 Madrid - Ismael Hernández	 "                                                                                                                                                                                                                   
+	@echo "------------------------------------------"
+	@echo "  $(NAME) compiled successfully"
+	@echo "------------------------------------------"
 
+$(NAME): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
-%.o:%.cpp $(INCLUDE)
-		$(CC) $(CFLAGS) -c $< -o $@
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) *.gcov *.gcda logs *.gcno *.html *.css 
-	rm -f $(OBJS)
-	@echo "Archivos .o eliminados."
+	rm -f $(OBJS) $(DEPS)
 
 fclean: clean
 	rm -f $(NAME)
-	@echo "Ejecutable $(NAME) eliminado."
 
 re: fclean all
 
-.PHONY: all clean fclean re 
- 
+.PHONY: all clean fclean re
+
+-include $(DEPS)

@@ -64,19 +64,11 @@ void	Harl::complain(std::string level)
 	for (size_t i = 0; i < 4; i++)
 	{
 		if (level == commands[i].text)
-			switch (i)
-			{
-				case 0:
-					(this->*commands[0].func)();
-				case 1:
-					(this->*commands[1].func)();
-				case 2:
-					(this->*commands[2].func)();
-				case 3:
-					(this->*commands[3].func)();
-				default:
-					return;
-			}
+		{
+			for (size_t j = i; j < 4; j++)
+				(this->*commands[j].func)();
+			return;
+		}
 	}
 	insignificant_error();
 }

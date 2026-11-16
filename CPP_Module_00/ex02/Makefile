@@ -1,29 +1,30 @@
 NAME		= globalbanksters
 CXX			= c++
-CXXFLAGS	= -std=c++98 -Wall -Wextra -Werror
+CXXFLAGS	= -std=c++98 -Wall -Wextra -Werror -MMD -MP
 
 SRCS		= Account.cpp tests.cpp
 OBJS		= $(SRCS:.cpp=.o)
+DEPS		= $(OBJS:.o=.d)
 
 all: $(NAME)
-	
+	@echo "------------------------------------------"
+	@echo "  $(NAME) compiled successfully"
+	@echo "------------------------------------------"
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
-	@echo "																													"
-	@echo " ██████╗██████╗ ██████╗    ███╗   ███╗ ██████╗ ██████╗ ██╗   ██╗██╗     ███████╗         ██████╗  ██████╗ 		"
-	@echo "██╔════╝██╔══██╗██╔══██╗   ████╗ ████║██╔═══██╗██╔══██╗██║   ██║██║     ██╔════╝        ██╔═████╗██╔═████╗		"
-	@echo "██║     ██████╔╝██████╔╝   ██╔████╔██║██║   ██║██║  ██║██║   ██║██║     █████╗          ██║██╔██║██║██╔██║		"
-	@echo "██║     ██╔═══╝ ██╔═══╝    ██║╚██╔╝██║██║   ██║██║  ██║██║   ██║██║     ██╔══╝          ████╔╝██║████╔╝██║		"
-	@echo "╚██████╗██║     ██║███████╗██║ ╚═╝ ██║╚██████╔╝██████╔╝╚██████╔╝███████╗███████╗███████╗╚██████╔╝╚██████╔╝		"
-	@echo " ╚═════╝╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝ ╚═════╝  ╚═════╝ 		"
-	@echo "                                                                                                          		"
-	@echo "			12/02/2024 - ismherna@student.42.fr - 42 Madrid - Ismael Hernández	 "
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(DEPS)
 
 fclean: clean
 	rm -f $(NAME)
 
-re: fclean $(NAME)
+re: fclean all
+
+.PHONY: all clean fclean re
+
+-include $(DEPS)

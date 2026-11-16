@@ -1,40 +1,30 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: ismherna <ismherna@student.42madrid.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/03/18 19:57:27 by ismherna          #+#    #+#              #
-#    Updated: 2025/03/18 19:58:03 by ismherna         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME		= Zombie
 CXX			= c++
-CXXFLAGS	= -std=c++98 -Wall -Wextra -Werror
+CXXFLAGS	= -std=c++98 -Wall -Wextra -Werror -MMD -MP
 
 SRCS		= main.cpp Zombie.cpp new_zombie.cpp randomc.cpp
 OBJS		= $(SRCS:.cpp=.o)
+DEPS		= $(OBJS:.o=.d)
 
 all: $(NAME)
-	
+	@echo "------------------------------------------"
+	@echo "  $(NAME) compiled successfully"
+	@echo "------------------------------------------"
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
-	@echo "																													"
-	@echo " ██████╗██████╗ ██████╗    ███╗   ███╗ ██████╗ ██████╗ ██╗   ██╗██╗     ███████╗         ██████╗  ██╗						"
-	@echo "██╔════╝██╔══██╗██╔══██╗   ████╗ ████║██╔═══██╗██╔══██╗██║   ██║██║     ██╔════╝        ██╔═████╗███║						"
-	@echo "██║     ██████╔╝██████╔╝   ██╔████╔██║██║   ██║██║  ██║██║   ██║██║     █████╗          ██║██╔██║╚██║						"
-	@echo "██║     ██╔═══╝ ██╔═══╝    ██║╚██╔╝██║██║   ██║██║  ██║██║   ██║██║     ██╔══╝          ████╔╝██║ ██║						"
-	@echo "╚██████╗██║     ██║███████╗██║ ╚═╝ ██║╚██████╔╝██████╔╝╚██████╔╝███████╗███████╗███████╗╚██████╔╝ ██║						"
-	@echo " ╚═════╝╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝ ╚═════╝  ╚═╝						"
-	@echo "			12/02/2024 - ismherna@student.42.fr - 42 Madrid - Ismael Hernández	 "
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(DEPS)
 
 fclean: clean
 	rm -f $(NAME)
 
-re: fclean $(NAME)
+re: fclean all
+
+.PHONY: all clean fclean re
+
+-include $(DEPS)

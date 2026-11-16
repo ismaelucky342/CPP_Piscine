@@ -1,272 +1,131 @@
-<img width="920" height="226" alt="imagen" src="https://github.com/user-attachments/assets/93997871-a73a-4303-bae6-47abc5acdcd5" />
+# CPP Module 03 - Inheritance
 
-# C++ Module 03 – Inheritance
+<img width="920" height="226" alt="CPP Module 03" src="https://github.com/user-attachments/assets/93997871-a73a-4303-bae6-47abc5acdcd5" />
+
+- **Rank:** 04
+- **Language:** C++98
+- **Subject:** [subjects/cpp03.pdf](../subjects/cpp03.pdf)
+- **Root documentation:** [../README.md](../README.md)
 
 ## Overview
-This module introduces inheritance in C++ as part of a series on Object-Oriented Programming (OOP). The project imple### Exercise 03 - Now it'---
 
+Module 03 introduces inheritance through a family of robots derived from `ClapTrap`. It covers construction and destruction order, method overriding, protected attributes, multiple inheritance and the diamond problem.
 
-## How to Test
+The module is intentionally repetitive: `ScavTrap` and `FragTrap` are almost identical, and `DiamondTrap` combines both. The repetition makes the construction chain and the ambiguity of multiple inheritance visible.
 
-### Compilation
-Each exercise has its own Makefile with standard rules:
-```bash
-# Navigate to any exercise
-cd ex0X/
+## Learning objectives
 
-# Compile
-make
+- Derive classes publicly from a base class.
+- Understand the order of construction and destruction.
+- Reuse base-class attributes while keeping them `protected` when needed.
+- Override member functions.
+- Understand non-virtual versus virtual inheritance.
+- Solve the diamond problem with virtual inheritance.
+- Handle name shadowing between a base class and a derived class.
 
-# Run the program  
-./[program_name]
+## Key concepts
 
-# Clean
-make clean    # Remove object files
-make fclean   # Remove everything
-make re       # Rebuild from scratch
-```
+### Construction and destruction order
 
-### Expected Behavior
+When a derived object is created:
 
-**Exercise 00**: 
-- Shows constructor/destructor messages in proper order
-- Demonstrates attack, damage, and repair mechanics
-- Tests copy constructor and assignment operator
+1. the base subobject is constructed first;
+2. then the derived part is constructed.
 
-**Exercise 01**: 
-- ScavTrap-specific messages and enhanced stats
-- Gate keeper functionality
-- Inheritance chain visibility
+Destruction happens in reverse order. The tests must show this explicitly.
 
-**Exercise 02**: 
-- FragTrap specialization and high-five feature
-- Different stat distribution vs ScavTrap
-- Multiple derivation from same base
+### Inheritance and access
 
-**Exercise 03**: 
-- Complex multiple inheritance resolution
-- Diamond problem handling
-- Dual identity demonstration (DiamondTrap vs ClapTrap names)
+- `public` inheritance models an "is-a" relationship.
+- `protected` attributes are accessible to derived classes but not to the outside world.
+- A derived class can call base-class member functions and access protected attributes.
 
-## Key Learning Points
+### Diamond problem
 
-1. **Constructor Order**: Base class constructors are called before derived class constructors
-2. **Destructor Order**: Reverse of constructor order (derived first, then base)
-3. **Access Control**: Understanding public, protected, and private inheritance
-4. **Method Overriding**: How derived classes can override base class methods
-5. **Multiple Inheritance**: Complexities and ambiguity resolution
-6. **Virtual Inheritance**: Solution to diamond problem in inheritance hierarchies
-7. **Object Slicing**: Understanding how objects behave in inheritance contexts
+If `DiamondTrap` inherits from both `FragTrap` and `ScavTrap`, and both inherit from `ClapTrap`, a naive design creates two `ClapTrap` subobjects. Virtual inheritance makes `FragTrap` and `ScavTrap` share a single `ClapTrap` subobject:
 
-## Common Pitfalls
-- Forgetting virtual destructors when using polymorphism
-- Not understanding constructor/destructor chaining order
-- Ambiguity issues in multiple inheritance without proper resolution
-- Memory leaks due to improper destructor implementation
-- Confusion between hiding and overriding in inheritance
-
-## Summary**: `ex03/DiamondTrap.{cpp,hpp}` + all inherited classes
-
-Complex multiple inheritance implementing the "Diamond Problem" scenario.
-
-**Multiple Inheritance**: 
 ```cpp
-class DiamondTrap : public FragTrap, public ScavTrap
+class FragTrap : virtual public ClapTrap { ... };
+class ScavTrap : virtual public ClapTrap { ... };
+class DiamondTrap : public FragTrap, public ScavTrap { ... };
 ```
 
-**Private Attributes**:
-- `_name`: DiamondTrap's own name (different from ClapTrap::_name)
-- `ClapTrap::_name`: Set to `name + "_clap_name"`
+The most-derived class is responsible for initializing the virtual base.
 
-**Attribute Inheritance Strategy**:
-- `_hitPoints`: From FragTrap (100)
-- `_energyPoints`: From ScavTrap (50) 
-- `_attackDamage`: From FragTrap (30)
-- `attack()` method: From ScavTrap
+### Name shadowing
 
-**New Methods**:
-- `void whoAmI()`: Displays both DiamondTrap name and ClapTrap name
-
-**Advanced Features**:
-- Resolves diamond inheritance ambiguity
-- Proper constructor chaining in multiple inheritance
-- Selective attribute and method inheritance
-- Demonstrates virtual inheritance conceptse inheritance hierarchy with four exercises that demonstrate different aspects of C++ inheritance, from basic class derivation to complex multiple inheritance scenarios. All code complies with the C++98 standard and implements the Orthodox Canonical Form.
-
-## Learning Objectives
-- Master single and multiple inheritance in C++
-- Understand constructor and destructor chaining in inheritance hierarchies
-- Implement the Orthodox Canonical Form for all classes
-- Handle function overriding and virtual functions
-- Resolve multiple inheritance ambiguities and diamond problem
-- Apply proper access control (public, protected, private inheritance)
-- Manage memory correctly in inheritance scenarios
-
-## Project Structure
-```
-CPP_Module_03/
-├── README.md
-├── ex00/                    # Basic ClapTrap class
-│   ├── ClapTrap.cpp
-│   ├── ClapTrap.hpp
-│   ├── main.cpp
-│   └── Makefile
-├── ex01/                    # ScavTrap inherits from ClapTrap
-│   ├── ClapTrap.cpp
-│   ├── ClapTrap.hpp
-│   ├── ScavTrap.cpp
-│   ├── ScavTrap.hpp
-│   ├── main.cpp
-│   └── Makefile
-├── ex02/                    # FragTrap inherits from ClapTrap
-│   ├── ClapTrap.cpp
-│   ├── ClapTrap.hpp
-│   ├── FragTrap.cpp
-│   ├── FragTrap.hpp
-│   ├── ScavTrap.cpp
-│   ├── ScavTrap.hpp
-│   ├── main.cpp
-│   └── Makefile
-└── ex03/                    # DiamondTrap with multiple inheritance
-    ├── ClapTrap.cpp
-    ├── ClapTrap.hpp
-    ├── DiamondTrap.cpp
-    ├── DiamondTrap.hpp
-    ├── FragTrap.cpp
-    ├── FragTrap.hpp
-    ├── ScavTrap.cpp
-    ├── ScavTrap.hpp
-    ├── main.cpp
-    └── Makefile
-```
-
-## Code Standards and Rules
-- **Compilation**: `c++ -Wall -Wextra -Werror -std=c++98`
-- **Orthodox Canonical Form**: All classes implement the four required functions:
-  - Default constructor
-  - Copy constructor  
-  - Copy assignment operator
-  - Destructor
-- **Forbidden Features**:
-  - C++11 or later features
-  - External libraries (e.g., Boost)
-  - `printf()`, `malloc()`, `calloc()`, `free()`
-  - `using namespace` and `friend` keywords
-  - STL containers and algorithms (except where explicitly allowed)
-- **Best Practices**:
-  - Include guards in all headers
-  - No function definitions in headers (except templates)
-  - Clean, readable code with proper formatting
-  - Proper memory management (no leaks)
-
-## Inheritance Hierarchy
-
-```
-ClapTrap (Base Class)
-├── ScavTrap (ex01)
-├── FragTrap (ex02)  
-└── DiamondTrap (ex03) ──┐
-    ├── FragTrap ────────┘
-    └── ScavTrap ────────┘
-```
-
-The project demonstrates:
-- **Single Inheritance**: ScavTrap and FragTrap inherit from ClapTrap
-- **Multiple Inheritance**: DiamondTrap inherits from both FragTrap and ScavTrap
-- **Diamond Problem**: Resolved using virtual inheritance where needed
+`DiamondTrap` declares its own `name` attribute with exactly the same name as the one in `ClapTrap`. This is deliberate: it forces the student to understand scope resolution (`DiamondTrap::name` versus `ClapTrap::name`) and the `-Wshadow` warning.
 
 ## Exercises
 
-### Exercise 00 - Aaaaand... OPEN! 🚀
-**File**: `ex00/ClapTrap.{cpp,hpp}`
+### ex00 - Aaaaand... OPEN!
 
-Implements the base `ClapTrap` class with the Orthodox Canonical Form.
+- **Directory:** `ex00/`
+- **Files:** `Makefile`, `main.cpp`, `ClapTrap.{h,hpp}`, `ClapTrap.cpp`
+- **Attributes:** name (constructor parameter), 10 hit points, 10 energy points, 0 attack damage.
+- **Member functions:**
+  - `attack(std::string const& target)`;
+  - `takeDamage(unsigned int amount)`;
+  - `beRepaired(unsigned int amount)`.
+- Attacking and repairing each cost 1 energy point.
+- A ClapTrap with 0 hit points or 0 energy points cannot act.
+- Every action and every constructor/destructor prints a message.
+- The robots do not interact directly with each other in this exercise.
 
-**Attributes** (all private):
-- `_name`: string (initialized from constructor parameter)
-- `_hitPoints`: 10 (health points)
-- `_energyPoints`: 10 (action energy)
-- `_attackDamage`: 0 (damage dealt)
+Example message:
 
-**Public Methods**:
-- `void attack(const std::string& target)`: Attacks target, costs 1 energy
-- `void takeDamage(unsigned int amount)`: Reduces hit points
-- `void beRepaired(unsigned int amount)`: Restores hit points, costs 1 energy
+```text
+ClapTrap <name> attacks <target>, causing <damage> points of damage!
+```
 
-**Features**:
-- Colorized console output for better readability
-- Constructor/destructor messages for tracking object lifecycle
-- Energy validation (attacks and repairs require energy)
-- Proper boundary checking for damage/repair amounts
+### ex01 - Serena, my love!
 
-**Testing**: Creates multiple ClapTraps, tests all functions, demonstrates copy semantics
+- **Directory:** `ex01/`
+- **Files:** previous files plus `ScavTrap.{h,hpp}`, `ScavTrap.cpp`
+- `ScavTrap` inherits publicly from `ClapTrap`.
+- Values: 100 hit points, 50 energy points, 20 attack damage.
+- Its constructors, destructor and `attack()` print different messages.
+- `guardGate()` prints that the ScavTrap is in Gate keeper mode.
+- The tests must show the `ClapTrap` construction/destruction chain.
 
----
+### ex02 - Repetitive work
 
-### Exercise 01 - Serena, my love! 💪
-**Files**: `ex01/ScavTrap.{cpp,hpp}` + inherited ClapTrap
+- **Directory:** `ex02/`
+- **Files:** previous files plus `FragTrap.{h,hpp}`, `FragTrap.cpp`
+- `FragTrap` inherits publicly from `ClapTrap`.
+- Values: 100 hit points, 100 energy points, 30 attack damage.
+- Its constructor, destructor and messages differ from `ScavTrap`.
+- `highFivesGuys()` prints a positive high-five request.
+- The tests must show the construction/destruction chain.
 
-Creates `ScavTrap` class inheriting publicly from `ClapTrap` with enhanced attributes.
+### ex03 - Now it's weird!
 
-**Enhanced Attributes**:
-- `_hitPoints`: 100 (vs ClapTrap's 10)
-- `_energyPoints`: 50 (vs ClapTrap's 10)  
-- `_attackDamage`: 20 (vs ClapTrap's 0)
+- **Directory:** `ex03/`
+- **Files:** previous files plus `DiamondTrap.{h,hpp}`, `DiamondTrap.cpp`
+- `DiamondTrap` inherits from both `FragTrap` and `ScavTrap`.
+- It has a private `name` attribute with exactly the same variable name as in `ClapTrap`.
+- Its `ClapTrap` name is the robot name plus `_clap_name`.
+- Hit points come from `FragTrap` (100), energy points from `ScavTrap` (50), attack damage from `FragTrap` (30).
+- `attack()` comes from `ScavTrap`.
+- `whoAmI()` prints both the `DiamondTrap` name and the `ClapTrap` name.
+- The `ClapTrap` subobject must be constructed once and only once: use virtual inheritance.
+- Completing this exercise is **not mandatory** to pass the module.
+- The subject suggests experimenting with `-Wshadow` and `-Wno-shadow`.
 
-**Overridden Methods**:
-- `void attack(const std::string& target)`: ScavTrap-specific attack messages
+## Build and run
 
-**New Methods**:
-- `void guardGate()`: Activates Gate keeper mode with special message
+```bash
+cd CPP_Module_03/ex00 && make && ./ScavTrap
+cd CPP_Module_03/ex01 && make && ./scavtrap
+cd CPP_Module_03/ex02 && make && ./scavtrap
+cd CPP_Module_03/ex03 && make && ./scavtrap
+```
 
-**Features**:
-- Custom constructor/destructor messages distinct from ClapTrap
-- Demonstrates method overriding and inheritance
-- Shows how derived classes can have different initial values
-- Proper base class constructor chaining
+## Evaluation notes
 
----
-
-### Exercise 02 - Repetitive work 🔥
-**Files**: `ex02/FragTrap.{cpp,hpp}` + inherited classes
-
-Implements `FragTrap` class, another ClapTrap derivative with different specialization.
-
-**Enhanced Attributes**:
-- `_hitPoints`: 100 (same as ScavTrap)
-- `_energyPoints`: 100 (more than ScavTrap's 50)
-- `_attackDamage`: 30 (more than ScavTrap's 20)
-
-**New Methods**:
-- `void highFivesGuys()`: Displays positive high-five request message
-
-**Features**:
-- FragTrap-specific constructor/destructor messages
-- Different attribute balance compared to ScavTrap
-- Demonstrates multiple derived classes from same base
-- Shows different specialization strategies
-
----
-
-### Exercise 03 - Now it’s weird!
-Create `DiamondTrap`, which inherits from both `FragTrap` and `ScavTrap`. Handle multiple inheritance carefully.
-
-Attributes:
-- Private `name` (not the same as `ClapTrap::name`)
-- `ClapTrap::name` should be initialized with `name + "_clap_name"`
-
-Use attributes and functions from parent classes:
-- Hit points and attack damage from `FragTrap`
-- Energy points and `attack()` from `ScavTrap`
-
-Add:
-- `void whoAmI();` – displays `name` and `ClapTrap::name`
-
-This exercise involves resolving ambiguity and understanding constructor chaining.
-
-### Extra
-
-By completing these exercises, you gain practical experience with inheritance hierarchies and multiple inheritance, preparing you for advanced object-oriented programming concepts in C++. The progression from simple single inheritance to complex multiple inheritance scenarios provides a thorough understanding of C++ inheritance mechanisms.
-
--Born2code
-![42madrid](https://github.com/ismaelucky342/Born2code/assets/153450550/3a377f34-9156-4eff-b04b-71c4b128523e)
+- Construction and destruction order must be visible in the output.
+- Each class must print its own messages; do not reuse the same string for every class.
+- `DiamondTrap` must not construct two `ClapTrap` subobjects.
+- Copy constructors must explicitly initialize their base classes. This repository fixes the missing base initialization in `ScavTrap`, `FragTrap` and `DiamondTrap`.
+- `DiamondTrap::whoAmI()` must show both names.
+- STL containers and algorithms are forbidden.
