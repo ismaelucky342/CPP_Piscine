@@ -1,0 +1,97 @@
+
+#include "Form.hpp"
+
+int Form::verifyGrade(int grade, int max, int min) const{
+	if (grade > max)
+		throw Form::GradeTooLowException();
+	else if (grade < min)
+		throw Form::GradeTooHighException();
+	return (grade);
+}
+
+
+Form::Form(void) : _is_signed(false) , _name("_form_") ,_sign_grade(150), _exec_grade(10) {
+	std::cout
+	<< "[Build] Form name: " << this->_name <<
+	" | sign grade: "<< this->_sign_grade <<
+	" | exec grade" << this->_exec_grade << std::endl;
+}
+
+Form::Form(const std::string name, int s_g, int e_g) :
+ _name(name), 
+ _sign_grade(s_g),
+ _exec_grade(e_g) {
+	std::cout
+	<< "[Build] Form name: " << this->_name <<
+	" | sign grade: "<< this->_sign_grade <<
+	" | exec grade" << this->_exec_grade << std::endl;
+
+}
+
+Form::Form(const Form& form) :
+ _is_signed(form.getIsSigned()),
+ _name(form.getName()),
+ _sign_grade(this->verifyGrade(form.getSignGrade(), 150, 1)),
+ _exec_grade(this->verifyGrade(form.getExecGrade(), 150, 1)) {
+	std::cout << "[Copy Constructor] Form called to copy " << form.getName() <<
+	" into " << this->getName() << std::endl;
+}
+
+Form::~Form(void) {
+	std::cout << "[Destroyed] Form " << this->_name << std::endl;
+}
+//Getters
+bool Form::getIsSigned(void) const {
+	return (this->_is_signed);
+}
+
+std::string Form::getName(void) const {
+	return (this->_name);
+}
+
+int Form::getSignGrade(void) const {
+	return (this->_sign_grade);
+}
+
+int Form::getExecGrade(void) const {
+	return (this->_exec_grade);
+}
+
+void Form::beSigned(Bureaucrat & bure) {
+	if (bure.getGrade() > this->_sign_grade)
+		throw Form::GradeTooLowException();
+	this->_is_signed = true;
+}
+
+//Exceptions
+const char *Form::GradeTooLowException::what(void) const throw() {
+	return ("Grade too low");
+};
+
+const char *Form::GradeTooHighException::what(void) const throw() {
+	return ("Grade too hight");
+};
+
+const char *Form::FormNotSignedException::what(void) const throw() {
+	return ("Form is not signed");
+};
+
+//Operators
+Form& Form::operator=(const Form& src) {
+	std::cout << "[Assignment] Form called to assignment " << src.getName() << std::endl;
+	if (this == &src)
+		return (*this);
+	this->_is_signed = src.getIsSigned();
+	return (*this);
+}
+
+std::ostream &operator<<(std::ostream &o, Form *f) {
+	if (!f)
+		return (o);
+	o << f->getName() 
+	<< ", form signed: " << f->getIsSigned() 
+	<< ", form sign grade " << f->getSignGrade() 
+	<< ", form exec grade " << f->getExecGrade() << std::endl;
+	return (o);
+}
+
