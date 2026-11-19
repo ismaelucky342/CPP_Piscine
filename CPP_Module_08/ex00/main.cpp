@@ -3,61 +3,58 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ismherna <ismherna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ismherna <ismherna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 15:06:23 by ismherna          #+#    #+#             */
-/*   Updated: 2025/03/20 23:27:46 by ismherna         ###   ########.fr       */
+/*   Updated: 2026/11/19 14:16:43 by ismherna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "easyfind.hpp"
+#include <deque>
+#include <iostream>
+#include <list>
+#include <vector>
 
+int main()
+{
+	std::vector<int> vector;
+	vector.push_back(5);
+	vector.push_back(17);
+	vector.push_back(3);
 
-int main () {
-	test_find_should_return_target();
-	test_find_should_return_exception();
-	test_find_then_src_null_should_return_exception();
-}
+	std::list<int> list;
+	list.push_back(5);
+	list.push_back(17);
+	list.push_back(3);
 
-void test_find_should_return_target() {
-	int	const w[] = { 321, 34, 657, 4, 76, 275, 657, 7654 };
-	size_t const		w_size( sizeof(w) / sizeof(int) );
-	std::vector<int> src(w, w + w_size);
+	std::deque<int> deque;
+	deque.push_back(5);
+	deque.push_back(17);
+	deque.push_back(3);
 
-	int result = easyfind<std::vector<int> >(src, 275);
-	assert(result == 275);
-	result = easyfind<std::vector<int> >(src, 657);
-	assert(result == 657);
-	result = easyfind<std::vector<int> >(src, 321);
-	assert(result == 321);
-	std::cout << GREEN << "test_find_should_return_target: OK[✅]!" << RESET <<  std::endl;
-}
+	std::cout << easyfind(vector, 17) << std::endl;
+	std::cout << easyfind(list, 3) << std::endl;
+	std::cout << easyfind(deque, 5) << std::endl;
 
-void test_find_should_return_exception() {
-	int	const w[] = { 321, 34, 657, 4, 76, 275, 657, 7654 };
-	size_t const		w_size( sizeof(w) / sizeof(int) );
-	std::vector<int> src(w, w + w_size);
-
-	try {
-		easyfind<std::vector<int> >(src, 10000);
-	} catch (std::exception &e) {
-		std::string str = RED "ERROR: Not found" RESET;
-		assert(str == e.what());
+	try
+	{
+		easyfind(vector, 42);
 	}
-	std::cout << GREEN << "test_find_should_return_exception: OK[✅]!" << RESET <<  std::endl;
-}
-void test_find_then_src_null_should_return_exception() {
-	std::vector<int> src;
-
-	try {
-
-		easyfind<std::vector<int> >(src, 275);
-	} catch (std::exception & e) {
-		std::string str = RED "ERROR: No arguments" RESET ;
-		assert(str == e.what());
-
+	catch (std::exception const &e)
+	{
+		std::cout << e.what() << std::endl;
 	}
 
-	std::cout << GREEN << "test_find_then_src_null_should_return_target: OK[✅]!" << RESET <<  std::endl;
+	try
+	{
+		std::vector<int> empty;
+		easyfind(empty, 42);
+	}
+	catch (std::exception const &e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+	return 0;
 }
 

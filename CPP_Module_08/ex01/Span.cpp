@@ -3,108 +3,117 @@
 /*                                                        :::      ::::::::   */
 /*   Span.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ismherna <ismherna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ismherna <ismherna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:32:20 by ismherna          #+#    #+#             */
-/*   Updated: 2025/03/20 23:31:23 by ismherna         ###   ########.fr       */
+/*   Updated: 2026/11/19 14:09:51 by ismherna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Span.hpp"
+#include <climits>
 #include <limits>
 
-Span::Span():
-_store(0),
-_n_max(0),
-_len_stored(0),
-_val_min(INT_MAX),
-_val_max(INT_MIN) {
-}
- 
-Span::~Span() {
-}
+Span::Span()
+	: _store(), _nMax(0), _lenStored(0), _valMin(INT_MAX), _valMax(INT_MIN)
+{}
 
-Span::Span(unsigned int n): 
-_store(0),
-_n_max(n),
-_len_stored(0),
-_val_min(INT_MAX),
-_val_max(INT_MIN) {
-}
+Span::Span(unsigned int n)
+	: _store(), _nMax(n), _lenStored(0), _valMin(INT_MAX), _valMax(INT_MIN)
+{}
 
-Span::Span(Span const & src): 
-_store(src._store),
-_n_max(src._n_max),
-_len_stored(src._len_stored),
-_val_min(src.getValMin()),
-_val_max(src.getValMax()) {
-}
+Span::Span(Span const &src)
+	: _store(src._store), _nMax(src._nMax), _lenStored(src._lenStored),
+	  _valMin(src._valMin), _valMax(src._valMax)
+{}
 
-Span &Span::operator=(Span const & src) {
-	if ( this == &src)
-		return *this;
-	this->_store = src._store;
-	this->_n_max = src._n_max;
-	this->_len_stored = src._len_stored;
-	this->_val_min = src._val_min;
-	this->_val_max = src._val_max;
+Span::~Span()
+{}
+
+Span &Span::operator=(Span const &src)
+{
+	if (this != &src)
+	{
+		_store = src._store;
+		_nMax = src._nMax;
+		_lenStored = src._lenStored;
+		_valMin = src._valMin;
+		_valMax = src._valMax;
+	}
 	return *this;
 }
 
-int Span::getValMin() const{
-	return _val_min;
-}
-
-int Span::getValMax() const{
-	return _val_max;
-}
-
-
-void Span::addNumber(int num) {
-	if (_len_stored >= _n_max)
-		throw std::invalid_argument("ERROR: Invalid Arg");
-	_store.push_back(num);
-	_len_stored = _store.size();
-	if (num < _val_min)
-		_val_min = num;
-	if (num > _val_max)
-		_val_max = num;
-}
-
-
-int &Span::operator[](unsigned int i) {
-	if (i < _len_stored)
-		return this->_store[i];
+void Span::addNumber(int number)
+{
+	if (_lenStored >= _nMax)
+		throw std::overflow_error("Span: span is full");
+	_store.push_back(number);
+	_lenStored = _store.size();
+	if (_lenStored == 1)
+	{
+		_valMin = number;
+		_valMax = number;
+	}
 	else
-		throw std::out_of_range("ERROR: Index is out of bounds");
+	{
+		if (number < _valMin)
+			_valMin = number;
+		if (number > _valMax)
+			_valMax = number;
+	}
 }
-int Span::shortestSpan() {
-	if (_len_stored == 0 || _len_stored == 1)
-		throw std::invalid_argument("ERROR: There are not enough numbers");
-	std::vector<int> sorted_store = _store;
-	std::sort(sorted_store.begin(), sorted_store.end());
+
+int Span::shortestSpan()
+{
+	if (_lenStored < 2)
+		throw std::invalid_argument("Span: not enough numbers");
+
+	std::vector<int> sorted = _store;
+	std::sort(sorted.begin(), sorted.end());
 
 	int shortest = std::numeric_limits<int>::max();
-	for (size_t i = 0; i < sorted_store.size() - 1; ++i) {
-		int diff = sorted_store[i + 1] - sorted_store[i];
-		if (diff < shortest)
-			shortest = diff;
+	for (size_t i = 0; i + 1 < sorted.size(); ++i)
+	{
+		long long difference = static_cast<long long>(sorted[i + 1]) - sorted[i];
+		if (difference < shortest)
+			shortest = static_cast<int>(difference);
 	}
 	return shortest;
 }
 
-int Span::longestSpan() {
-	if (_len_stored == 0 || _len_stored == 1)
-		throw std::invalid_argument("ERROR: There are not enough numbers");
-
-	return _val_max - _val_min;
+int Span::longestSpan()
+{
+	if (_lenStored < 2)
+		throw std::invalid_argument("Span: not enough numbers");
+	long long difference = static_cast<long long>(_valMax) - _valMin;
+	if (difference > std::numeric_limits<int>::max())
+		return std::numeric_limits<int>::max();
+	return static_cast<int>(difference);
 }
 
-std::vector<int>::iterator Span::begin() {
+int &Span::operator[](unsigned int index)
+{
+	if (index >= _lenStored)
+		throw std::out_of_range("Span: index out of bounds");
+	return _store[index];
+}
+
+int Span::getValMin() const
+{
+	return _valMin;
+}
+
+int Span::getValMax() const
+{
+	return _valMax;
+}
+
+std::vector<int>::iterator Span::begin()
+{
 	return _store.begin();
 }
 
-std::vector<int>::iterator Span::end() {
+std::vector<int>::iterator Span::end()
+{
 	return _store.end();
-
 }

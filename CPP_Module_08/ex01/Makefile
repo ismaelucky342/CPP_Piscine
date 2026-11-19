@@ -1,10 +1,9 @@
 NAME		= span
 CXX			= c++
-CXXFLAGS	= -std=c++98 -Wall -Wextra -Werror -MMD -MP
+CXXFLAGS	= -std=c++98 -Wall -Wextra -Werror
 
 SRCS		= main.cpp Span.cpp
 OBJS		= $(SRCS:.cpp=.o)
-DEPS		= $(OBJS:.o=.d)
 
 all: $(NAME)
 	@echo "------------------------------------------"
@@ -18,7 +17,7 @@ $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(DEPS)
+	rm -f $(OBJS)
 
 fclean: clean
 	rm -f $(NAME)
@@ -26,5 +25,3 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
-
--include $(DEPS)

@@ -1,23 +1,20 @@
 #ifndef EASYFIND_TPP
 #define EASYFIND_TPP
 
-#include "easyfind.hpp"
-#include <stdexcept>
 #include <algorithm>
+#include <stdexcept>
 
 template <typename T>
-int easyfind(T &container, int target) {
-
+int easyfind(T const &container, int target)
+{
 	if (container.begin() == container.end())
-		throw std::invalid_argument(RED "ERROR: No arguments" RESET);
+		throw std::invalid_argument("easyfind: empty container");
 
-	typename T::iterator result = std::find(container.begin(), container.end(), target);
-
-	if (result != container.end())
-		return *result;
-	else
-		throw std::invalid_argument(RED "ERROR: Not found" RESET);
+	typedef typename T::const_iterator ConstIterator;
+	ConstIterator result = std::find(container.begin(), container.end(), target);
+	if (result == container.end())
+		throw std::invalid_argument("easyfind: value not found");
+	return *result;
 }
-
 
 #endif
